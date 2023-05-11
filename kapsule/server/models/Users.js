@@ -2,6 +2,14 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 
+const imageSchema = new mongoose.Schema({
+  id: {
+    type: String,
+  },
+  public: { type: Boolean },
+  tags: [{ type: String }],
+});
+
 const UsersSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -12,11 +20,7 @@ const UsersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  images: [
-    {
-      type: String,
-    },
-  ],
+  images: [imageSchema],
 });
 
 // static signup method
@@ -82,8 +86,7 @@ UsersSchema.statics.upload = async function (userId, imageId) {
 
   const user = await this.findOne({ username: userId });
 
-  
-  user.images.push(imageId);
+  user.images.push({ id: imageId });
   user.save();
 };
 
@@ -94,7 +97,6 @@ UsersSchema.statics.retrieve = async function (userId) {
   }
 
   const user = await this.findOne({ username: userId });
-
   return user.images;
 };
 

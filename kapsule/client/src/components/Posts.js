@@ -122,10 +122,10 @@ const Posts = () => {
       )}
       <SimpleGrid columns={[3, 4, 5]} spacing={4} listStyleType={'none'} >
         {images?.length > 0 &&
-          images.slice().reverse().map((imgId) => (
-            <li key={imgId}>
+          images.map((img) => (
+            <li key={img.id}>
               <AspectRatio w={"auto"} ratio={1}>
-              <Image src={getUrl(imgId)} alt="" objectFit="cover" />
+              <Image src={getUrl(img.id)} alt="" objectFit="cover" />
             </AspectRatio>
             </li>
             
