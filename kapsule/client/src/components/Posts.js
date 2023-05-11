@@ -1,6 +1,17 @@
-import { Box, Button, Input, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  Text,
+  Image,
+  SimpleGrid,
+  AspectRatio,
+  CircularProgress,
+} from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import axiosClient from "../config/axios";
+import { useUpload } from "../hooks/useUpload";
+import { useRetrieve } from "../hooks/useRetrieve";
 
 const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
 
@@ -16,12 +27,23 @@ const api_key = "745634272993468";
 const Posts = () => {
   const aRef = useRef(null);
   const [error, setError] = useState("");
+  const user = JSON.parse(localStorage.getItem("user"));
 
+  // upload and retrieve hooks
+  const { upload, uploading, uploadErr } = useUpload();
+
+  const [refetch, setRefetch] = useState(0);
+  const {
+    data: images,
+    isLoading: retrieving,
+    error: retrieveErr,
+  } = useRetrieve(user.username, refetch);
+
+  // handles upload
   const handleUpload = async (e) => {
     e.preventDefault();
 
     const file = e.target.files[0];
-    console.log(file);
 
     if (!validFileTypes.find((type) => type === file.type)) {
       setError("File must be in JPG/PNG format");
@@ -36,21 +58,24 @@ const Posts = () => {
     data.append("signature", signatureResponse.data.signature);
     data.append("timestamp", signatureResponse.data.timestamp);
 
-    const cloudinaryResponse = await axiosClient.post(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/auto/upload`,
+    const cloudRes = await axiosClient.post(
+      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
       data,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: function (e) {
-          console.log(e.loaded / e.total);
-        },
-      },
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
-    console.log(cloudinaryResponse.data);
+
+    await upload(user.username, cloudRes.data.public_id);
+    setTimeout(() => {
+      setRefetch((s) => s + 1);
+    }, 1000);
   };
 
   const resetInput = () => {
     aRef.current.value = null;
+  };
+
+  const getUrl = (imageId) => {
+    return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}.jpg`;
   };
 
   return (
@@ -69,11 +94,43 @@ const Posts = () => {
         variant="outline"
         mb={4}
         cursor="pointer"
+        isLoading={uploading}
         onClick={resetInput}
       >
         Upload
       </Button>
-      {error && <ErrorText />}
+      {error && <ErrorText>{error}</ErrorText>}
+      {uploadErr && <ErrorText>{uploadErr}</ErrorText>}
+
+      {retrieving && (
+        <CircularProgress
+          color="gray.600"
+          trackColor="blue.300"
+          size={7}
+          thickness={10}
+          isIndeterminate
+        />
+      )}
+      {retrieveErr && (
+        <ErrorText textAlign="left">Failed to load images</ErrorText>
+      )}
+
+      {!retrieveErr && images?.length === 0 && (
+        <Text textAlign="left" fontSize="lg" color="gray.500">
+          No images found
+        </Text>
+      )}
+      <SimpleGrid columns={[3, 4, 5]} spacing={4} listStyleType={'none'} >
+        {images?.length > 0 &&
+          images.slice().reverse().map((imgId) => (
+            <li key={imgId}>
+              <AspectRatio w={"auto"} ratio={1}>
+              <Image src={getUrl(imgId)} alt="" objectFit="cover" />
+            </AspectRatio>
+            </li>
+            
+          ))}
+      </SimpleGrid>
     </Box>
   );
 };
