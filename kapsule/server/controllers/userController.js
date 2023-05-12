@@ -39,10 +39,16 @@ const signupUser = async (req, res) => {
 
 // upload image
 const uploadImg = async (req, res) => {
-  const { userId, imageId } = req.body;
+  const {
+    username: userId,
+    id: imageId,
+    description: desc,
+    public: public,
+    tags: tags,
+  } = req.body;
 
   try {
-    await User.upload(userId, imageId);
+    await User.upload(userId, imageId, desc, public, tags);
     res.status(200).json("successful upload");
   } catch (error) {
     res.status(400).json({ error: error.message });

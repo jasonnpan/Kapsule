@@ -3,9 +3,8 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 
 const imageSchema = new mongoose.Schema({
-  id: {
-    type: String,
-  },
+  id: { type: String },
+  description: { type: String },
   public: { type: Boolean },
   tags: [{ type: String }],
 });
@@ -75,8 +74,15 @@ UsersSchema.statics.login = async function (username, password) {
   return user;
 };
 
+
 // static upload method
-UsersSchema.statics.upload = async function (userId, imageId) {
+UsersSchema.statics.upload = async function (
+  userId,
+  imageId,
+  desc,
+  public,
+  tags
+) {
   if (!userId) {
     throw Error("Invalid userId! Please login before continuing.");
   }
@@ -85,10 +91,19 @@ UsersSchema.statics.upload = async function (userId, imageId) {
   }
 
   const user = await this.findOne({ username: userId });
-
-  user.images.push({ id: imageId });
+  
+  const imageInfo = {
+    id: imageId,
+    description: desc,
+    public: public,
+    tags: tags,
+  };
+  console.log(imageInfo);
+  user.images.push(imageInfo);
   user.save();
 };
+
+
 
 // static retrieve method
 UsersSchema.statics.retrieve = async function (userId) {
