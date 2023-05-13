@@ -34,12 +34,19 @@ const api_key = "745634272993468";
 const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
 
 const ErrorText = ({ children, ...props }) => (
-  <Text fontSize="lg" color="red.300" textAlign="center" mb={2} fontWeight={"bold"} {...props}>
+  <Text
+    fontSize="lg"
+    color="red.300"
+    textAlign="center"
+    mb={2}
+    fontWeight={"bold"}
+    {...props}
+  >
     {children}
   </Text>
 );
 
-const Upload = () => {
+const Upload = ({ setUpdate }) => {
   const [description, setDescription] = useState("");
   const [pub, setPub] = useState(false);
   const [tags, setTags] = useState([]);
@@ -50,15 +57,15 @@ const Upload = () => {
 
   const [image, setImage] = useState(null);
   const [imageURL, setImageURL] = useState(null);
-  
+
   const onImageChange = (e) => {
-    setError("")
-    setImage(null)
-    setUploadError("")
+    setError("");
+    setImage(null);
+    setUploadError("");
 
     const file = e.target.files[0];
 
-    if (!validFileTypes.find((type) => (file && type === file.type))) {
+    if (!validFileTypes.find((type) => file && type === file.type)) {
       setError("File must be in JPG/PNG format");
       return;
     }
@@ -80,7 +87,7 @@ const Upload = () => {
     setTags([]);
     setNewTag("");
     setError("");
-    setUploadError("")
+    setUploadError("");
   };
 
   const openHandler = () => {
@@ -99,9 +106,8 @@ const Upload = () => {
   const [uploadError, setUploadError] = useState("");
 
   const handleUpload = async () => {
-
     if (!image) {
-      setUploadError("Please add an image.")
+      setUploadError("Please add an image.");
       return;
     }
 
@@ -126,6 +132,7 @@ const Upload = () => {
     };
 
     await upload(uploadInfo);
+    setUpdate(true);
     onClose();
   };
 
@@ -212,7 +219,9 @@ const Upload = () => {
             >
               Upload
             </Button>
-            <Button type="submit" onClick={onClose}>Cancel</Button>
+            <Button type="submit" onClick={onClose}>
+              Cancel
+            </Button>
           </ModalFooter>
           {uploadError && <ErrorText>{uploadError}</ErrorText>}
           {uploadErr && <ErrorText>{uploadErr}</ErrorText>}

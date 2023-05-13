@@ -3,8 +3,23 @@ import Posts from "../components/Posts";
 import Upload from "../components/Upload";
 import ProfileImage from "../assets/profile.png";
 
+import { useState } from "react";
+import { useRetrieve } from "../hooks/useRetrieve";
+
 const Profile = () => {
   const user = JSON.parse(localStorage.getItem("user"));
+  const [update, setUpdate] = useState(false);
+
+  // retrieve hooks
+  const [refetch, setRefetch] = useState(0);
+  const retrieveState = useRetrieve(user.username, refetch);
+
+  if (update) {
+    setTimeout(() => {
+      setRefetch((s) => s + 1);
+    }, 1000);
+    setUpdate(false);
+  }
 
   return (
     <Box textAlign="center" fontSize="2xl" p={5}>
@@ -21,9 +36,9 @@ const Profile = () => {
           Software Engineer
         </Text>
       </VStack>
-      
-      <Upload />
-      {/* <Posts /> */}
+
+      <Upload setUpdate={setUpdate} />
+      <Posts retrieveState={retrieveState} />
     </Box>
   );
 };
