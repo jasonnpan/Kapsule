@@ -1,5 +1,6 @@
 import { Box, VStack, Image, Text, useColorModeValue } from "@chakra-ui/react";
 import Posts from "../components/Posts";
+import Upload from "../components/Upload";
 import ProfileImage from "../assets/profile.png";
 
 const Profile = () => {
@@ -20,8 +21,9 @@ const Profile = () => {
           Software Engineer
         </Text>
       </VStack>
-
-      <Posts />
+      
+      <Upload />
+      {/* <Posts /> */}
     </Box>
   );
 };

@@ -7,6 +7,7 @@ import {
   SimpleGrid,
   AspectRatio,
   CircularProgress,
+  Flex,
 } from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import axiosClient from "../config/axios";
@@ -79,7 +80,7 @@ const Posts = () => {
   };
 
   return (
-    <Box mt={6}>
+    <Flex mt={6} flexDirection={'column'} alignItems={'center'}>
       <Input
         id="imageInput"
         ref={aRef}
@@ -131,7 +132,7 @@ const Posts = () => {
             
           ))}
       </SimpleGrid>
-    </Box>
+    </Flex>
   );
 };
 export default Posts;
