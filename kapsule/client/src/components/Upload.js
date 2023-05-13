@@ -24,25 +24,47 @@ import {
   Checkbox,
   InputRightElement,
   InputGroup,
+  Text,
 } from "@chakra-ui/react";
 
 const user = JSON.parse(localStorage.getItem("user"));
 const cloud_name = "dn2csumoj";
 const api_key = "745634272993468";
 
+const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
+
+const ErrorText = ({ children, ...props }) => (
+  <Text fontSize="lg" color="red.300" textAlign="center" mb={2} fontWeight={"bold"} {...props}>
+    {children}
+  </Text>
+);
+
 const Upload = () => {
   const [description, setDescription] = useState("");
   const [pub, setPub] = useState(false);
   const [tags, setTags] = useState([]);
   const [newTag, setNewTag] = useState("");
+  const [error, setError] = useState("");
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [image, setImage] = useState(null);
   const [imageURL, setImageURL] = useState(null);
+  
   const onImageChange = (e) => {
+    setError("")
+    setImage(null)
+    setUploadError("")
+
+    const file = e.target.files[0];
+
+    if (!validFileTypes.find((type) => (file && type === file.type))) {
+      setError("File must be in JPG/PNG format");
+      return;
+    }
+
     if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+      setImage(file);
       setImageURL(URL.createObjectURL(e.target.files[0]));
     }
   };
@@ -57,6 +79,8 @@ const Upload = () => {
     setPub(false);
     setTags([]);
     setNewTag("");
+    setError("");
+    setUploadError("")
   };
 
   const openHandler = () => {
@@ -72,8 +96,15 @@ const Upload = () => {
   };
 
   const { upload, uploading, uploadErr } = useUpload();
+  const [uploadError, setUploadError] = useState("");
 
   const handleUpload = async () => {
+
+    if (!image) {
+      setUploadError("Please add an image.")
+      return;
+    }
+
     const signatureResponse = await axiosClient.get("/get-signature");
     const data = new FormData();
     data.append("file", image);
@@ -98,7 +129,6 @@ const Upload = () => {
     onClose();
   };
 
-
   return (
     <Box>
       <Button onClick={openHandler} colorScheme="blue" variant="outline">
@@ -111,8 +141,9 @@ const Upload = () => {
           <ModalHeader>Upload options</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl>
+            <FormControl isInvalid={uploadError}>
               <Input onChange={onImageChange} type="file" padding={1.5} />
+              {error && <ErrorText>{error}</ErrorText>}
               {image && (
                 <Image
                   mt={2}
@@ -146,7 +177,13 @@ const Upload = () => {
                   onChange={(e) => setNewTag(e.target.value)}
                 ></Input>
                 <InputRightElement>
-                  <Button onClick={addTag} colorScheme="blue" variant={'outline'}>Add</Button>
+                  <Button
+                    onClick={addTag}
+                    colorScheme="blue"
+                    variant={"outline"}
+                  >
+                    Add
+                  </Button>
                 </InputRightElement>
               </InputGroup>
 
@@ -167,11 +204,18 @@ const Upload = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleUpload}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleUpload}
+              isLoading={uploading}
+            >
               Upload
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button type="submit" onClick={onClose}>Cancel</Button>
           </ModalFooter>
+          {uploadError && <ErrorText>{uploadError}</ErrorText>}
+          {uploadErr && <ErrorText>{uploadErr}</ErrorText>}
         </ModalContent>
       </Modal>
     </Box>
