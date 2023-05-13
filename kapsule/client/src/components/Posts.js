@@ -49,13 +49,14 @@ const Posts = ({ retrieveState }) => {
           No images found
         </Text>
       )}
-      <SimpleGrid columns={[3, 4, 5]} spacing={4} listStyleType={"none"}>
+      <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
         {images?.length > 0 &&
           images.slice().reverse().map((img) => (
             <li key={img.id}>
               <AspectRatio w={"auto"} ratio={1}>
                 <Image src={getUrl(img.id)} alt="" objectFit="cover" />
               </AspectRatio>
+              <Text fontSize={'md'} noOfLines={2}>{img.description}</Text>
             </li>
           ))}
       </SimpleGrid>
