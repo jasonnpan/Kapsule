@@ -6,6 +6,7 @@ const {
   loginUser,
   uploadImg,
   retrieveImg,
+  addLikes,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -20,6 +21,9 @@ router.post("/signup", signupUser);
 router.post("/upload", uploadImg);
 
 // retrieve route
-router.post("/retrieve", retrieveImg)
+router.post("/retrieve", retrieveImg);
+
+// likes route
+router.post("/likes", addLikes);
 
 module.exports = router;

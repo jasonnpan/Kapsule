@@ -7,6 +7,7 @@ const imageSchema = new mongoose.Schema({
   description: { type: String },
   public: { type: Boolean },
   tags: [{ type: String }],
+  likes: { type: Number },
 });
 
 const UsersSchema = new mongoose.Schema({
@@ -74,7 +75,6 @@ UsersSchema.statics.login = async function (username, password) {
   return user;
 };
 
-
 // static upload method
 UsersSchema.statics.upload = async function (
   userId,
@@ -91,19 +91,18 @@ UsersSchema.statics.upload = async function (
   }
 
   const user = await this.findOne({ username: userId });
-  
+
   const imageInfo = {
     id: imageId,
     description: desc,
     public: public,
     tags: tags,
+    likes: 0,
   };
   console.log(imageInfo);
   user.images.push(imageInfo);
   user.save();
 };
-
-
 
 // static retrieve method
 UsersSchema.statics.retrieve = async function (userId) {
@@ -113,6 +112,22 @@ UsersSchema.statics.retrieve = async function (userId) {
 
   const user = await this.findOne({ username: userId });
   return user.images;
+};
+
+// static addLikes method
+UsersSchema.statics.likes = async function (userId, imageId) {
+  if (!userId) {
+    throw Error("Invalid userId! Please login before continuing.");
+  }
+  if (!imageId) {
+    throw Error("Invalid image.");
+  }
+
+  const user = await this.findOne({ username: userId });
+  const userImage = user.images.find((element) => element.id == imageId);
+
+  userImage.likes += 1;
+  user.save();
 };
 
 const UserModel = mongoose.model("users", UsersSchema);

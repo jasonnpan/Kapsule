@@ -67,4 +67,16 @@ const retrieveImg = async (req, res) => {
   }
 };
 
-module.exports = { signupUser, loginUser, uploadImg, retrieveImg };
+// increase likes to image
+const addLikes = async (req, res) => {
+  const { username: userId, id: imageId } = req.body;
+
+  try {
+    await User.likes(userId, imageId);
+    res.status(200).json("likes +1");
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = { signupUser, loginUser, uploadImg, retrieveImg, addLikes };
