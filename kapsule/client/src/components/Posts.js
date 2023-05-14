@@ -6,10 +6,7 @@ import {
   CircularProgress,
   Flex,
   Button,
-  Box,
 } from "@chakra-ui/react";
-
-import { useState } from "react";
 
 import { Favorite } from "@mui/icons-material";
 import { useLikes } from "../hooks/useLikes";
@@ -30,19 +27,16 @@ const Posts = ({ retrieveState }) => {
     error: retrieveErr,
   } = retrieveState;
 
-  const {
-    likes: likes,
-    isLoading: likesLoading,
-    error: likesError,
-  } = useLikes();
+  const { likes, error: likesError } = useLikes();
 
-  const handleLikes = async (id) => {
+  const handleLikes = async (id, revIndex) => {
+    images[images.length - revIndex - 1].likes += 1;
     const likesInfo = { username: user.username, id: id };
     await likes(likesInfo);
   };
 
   const getUrl = (imageId) => {
-    return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}.jpg`;
+    return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
   };
 
   return (
@@ -73,14 +67,19 @@ const Posts = ({ retrieveState }) => {
           images
             .slice()
             .reverse()
-            .map((img) => (
+            .map((img, index) => (
               <li key={img.id}>
                 <AspectRatio w={"auto"} ratio={1}>
                   <Image src={getUrl(img.id)} alt="" objectFit="cover" />
                 </AspectRatio>
-                <Button leftIcon={<Favorite />} onClick={() => handleLikes(img.id)}>
-                  Like
+                <Button
+                  leftIcon={<Favorite />}
+                  onClick={() => handleLikes(img.id, index)}
+                >
+                  <Text>{img.likes}</Text>
+                  {likesError && <ErrorText>Likes malfunction</ErrorText>}
                 </Button>
+                
                 <Text fontSize={"md"} noOfLines={2}>
                   {img.description}
                 </Text>

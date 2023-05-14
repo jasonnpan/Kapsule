@@ -26,7 +26,7 @@ const Profile = () => {
       <VStack p={7} m="auto" width="fit-content" borderRadius={6} pt={"65px"}>
         <Image
           borderRadius="full"
-          boxSize="120px"
+          boxSize="30%"
           src={ProfileImage}
           alt="Profile"
           bg={useColorModeValue("white", "gray.100")}
