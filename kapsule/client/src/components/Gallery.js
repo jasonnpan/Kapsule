@@ -20,7 +20,6 @@ const ErrorText = ({ children, ...props }) => (
 );
 
 const cloud_name = "dn2csumoj";
-const user = JSON.parse(localStorage.getItem("user"));
 
 const Gallery = () => {
   const {
@@ -35,13 +34,14 @@ const Gallery = () => {
     })
     .sort((a, b) => b.date - a.date);
 
-  // const { likes, error: likesError } = useLikes();
+  const { likes, error: likesError } = useLikes();
 
-  // const handleLikes = async (id, revIndex) => {
-  //   images[images.length - revIndex - 1].likes += 1;
-  //   const likesInfo = { username: user.username, id: id };
-  //   await likes(likesInfo);
-  // };
+  const handleLikes = async (index) => {
+    const img = sortedImages[index];
+    images.find((a) => a.id === img.id).likes += 1;
+    const likesInfo = { username: img.author, id: img.id };
+    await likes(likesInfo);
+  };
 
   const getUrl = (imageId) => {
     return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
@@ -72,12 +72,23 @@ const Gallery = () => {
       )}
       <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
         {sortedImages?.length > 0 &&
-          sortedImages.map((img) => (
-            <span key={img.id}>
+          sortedImages.map((img, index) => (
+            <Box key={img.id} >
               <AspectRatio w={"auto"} ratio={1}>
                 <Image src={getUrl(img.id)} alt="" objectFit="cover" />
               </AspectRatio>
-            </span>
+              <Button
+                leftIcon={<Favorite />}
+                onClick={() => handleLikes(index)}
+                // mx={'50%'}
+              >
+                <Text>{img.likes}</Text>
+              </Button>
+              {likesError && <ErrorText>Likes malfunction</ErrorText>}
+              <Text fontSize={"md"} noOfLines={2}>
+                {img.description}
+              </Text>
+            </Box>
           ))}
       </SimpleGrid>
     </Flex>

@@ -38,6 +38,7 @@ const Navbar = () => {
 
   const handleLogOut = () => {
     logout();
+    navigate("/");
   };
 
   return (

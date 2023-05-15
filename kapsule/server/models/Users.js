@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 
 const imageSchema = new mongoose.Schema({
+  author: { type: String },
   id: { type: String },
   description: { type: String },
   public: { type: Boolean },
@@ -94,6 +95,7 @@ UsersSchema.statics.upload = async function (imageInfo) {
   const user = await this.findOne({ username: userId });
 
   const image = {
+    author: userId,
     id: imageId,
     description: desc,
     public: publ,
@@ -102,7 +104,6 @@ UsersSchema.statics.upload = async function (imageInfo) {
     date: date,
   };
 
-  console.log(image);
   user.images.push(image);
   user.save();
 };

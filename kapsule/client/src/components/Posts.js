@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Flex,
   Button,
+  Box,
 } from "@chakra-ui/react";
 
 import { Favorite } from "@mui/icons-material";
@@ -71,7 +72,7 @@ const Posts = ({ retrieveState }) => {
       <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
         {sortedImages?.length > 0 &&
           sortedImages.map((img, index) => (
-            <li key={img.id}>
+            <Box key={img.id}>
               <AspectRatio w={"auto"} ratio={1}>
                 <Image src={getUrl(img.id)} alt="" objectFit="cover" />
               </AspectRatio>
@@ -80,13 +81,12 @@ const Posts = ({ retrieveState }) => {
                 onClick={() => handleLikes(img.id, index)}
               >
                 <Text>{img.likes}</Text>
-                {likesError && <ErrorText>Likes malfunction</ErrorText>}
               </Button>
-
+              {likesError && <ErrorText>Likes malfunction</ErrorText>}
               <Text fontSize={"md"} noOfLines={2}>
                 {img.description}
               </Text>
-            </li>
+            </Box>
           ))}
       </SimpleGrid>
     </Flex>
