@@ -39,16 +39,9 @@ const signupUser = async (req, res) => {
 
 // upload image
 const uploadImg = async (req, res) => {
-  const {
-    username: userId,
-    id: imageId,
-    description: desc,
-    public: public,
-    tags: tags,
-  } = req.body;
 
   try {
-    await User.upload(userId, imageId, desc, public, tags);
+    await User.upload(req.body);
     res.status(200).json("successful upload");
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -79,4 +72,30 @@ const addLikes = async (req, res) => {
   }
 };
 
-module.exports = { signupUser, loginUser, uploadImg, retrieveImg, addLikes };
+// getAllUsers
+const getAllImages = async (req, res) => {
+  const merge = (first, second) => {
+    for (let i = 0; i < second.length; i++) {
+      first.push(second[i]);
+    }
+    return first;
+  };
+
+  try {
+    var allImages = [];
+    const users = await User.allUsers();
+    await users.map((user) => merge(allImages, user.images));
+    res.status(200).json(allImages);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  signupUser,
+  loginUser,
+  uploadImg,
+  retrieveImg,
+  addLikes,
+  getAllImages,
+};

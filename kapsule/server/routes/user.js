@@ -7,6 +7,7 @@ const {
   uploadImg,
   retrieveImg,
   addLikes,
+  getAllImages,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -25,5 +26,8 @@ router.post("/retrieve", retrieveImg);
 
 // likes route
 router.post("/likes", addLikes);
+
+// users route
+router.post("/allImages", getAllImages);
 
 module.exports = router;

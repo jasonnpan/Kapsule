@@ -6,10 +6,12 @@ import {
   CircularProgress,
   Flex,
   Button,
+  Box,
 } from "@chakra-ui/react";
 
 import { Favorite } from "@mui/icons-material";
 import { useLikes } from "../hooks/useLikes";
+import { useRetrieveAll } from "../hooks/useRetrieveAll";
 
 const ErrorText = ({ children, ...props }) => (
   <Text fontSize="lg" color="red.300" {...props}>
@@ -20,12 +22,12 @@ const ErrorText = ({ children, ...props }) => (
 const cloud_name = "dn2csumoj";
 const user = JSON.parse(localStorage.getItem("user"));
 
-const Posts = ({ retrieveState }) => {
+const Gallery = () => {
   const {
     data: images,
     isLoading: retrieving,
     error: retrieveErr,
-  } = retrieveState;
+  } = useRetrieveAll();
 
   const sortedImages = images
     ?.map((obj) => {
@@ -33,13 +35,13 @@ const Posts = ({ retrieveState }) => {
     })
     .sort((a, b) => b.date - a.date);
 
-  const { likes, error: likesError } = useLikes();
+  // const { likes, error: likesError } = useLikes();
 
-  const handleLikes = async (id, revIndex) => {
-    images[images.length - revIndex - 1].likes += 1;
-    const likesInfo = { username: user.username, id: id };
-    await likes(likesInfo);
-  };
+  // const handleLikes = async (id, revIndex) => {
+  //   images[images.length - revIndex - 1].likes += 1;
+  //   const likesInfo = { username: user.username, id: id };
+  //   await likes(likesInfo);
+  // };
 
   const getUrl = (imageId) => {
     return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
@@ -48,7 +50,7 @@ const Posts = ({ retrieveState }) => {
   return (
     <Flex mt={6} flexDirection={"column"}>
       <Text textAlign={"left"} fontSize={"4xl"} mb={2}>
-        Posts
+        Discover
       </Text>
       {retrieving && (
         <CircularProgress
@@ -70,26 +72,15 @@ const Posts = ({ retrieveState }) => {
       )}
       <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
         {sortedImages?.length > 0 &&
-          sortedImages.map((img, index) => (
-            <li key={img.id}>
+          sortedImages.map((img) => (
+            <span key={img.id}>
               <AspectRatio w={"auto"} ratio={1}>
                 <Image src={getUrl(img.id)} alt="" objectFit="cover" />
               </AspectRatio>
-              <Button
-                leftIcon={<Favorite />}
-                onClick={() => handleLikes(img.id, index)}
-              >
-                <Text>{img.likes}</Text>
-                {likesError && <ErrorText>Likes malfunction</ErrorText>}
-              </Button>
-
-              <Text fontSize={"md"} noOfLines={2}>
-                {img.description}
-              </Text>
-            </li>
+            </span>
           ))}
       </SimpleGrid>
     </Flex>
   );
 };
-export default Posts;
+export default Gallery;

@@ -129,6 +129,7 @@ const Upload = ({ setUpdate }) => {
       description: description,
       public: pub,
       tags: tags,
+      date: Date().toLocaleString(),
     };
 
     await upload(uploadInfo);
@@ -155,6 +156,7 @@ const Upload = ({ setUpdate }) => {
                 <Image
                   mt={2}
                   boxSize={100}
+                  objectFit={'cover'}
                   alt="preview image"
                   src={imageURL}
                 />

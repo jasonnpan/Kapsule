@@ -8,6 +8,7 @@ const imageSchema = new mongoose.Schema({
   public: { type: Boolean },
   tags: [{ type: String }],
   likes: { type: Number },
+  date: { type: Date },
 });
 
 const UsersSchema = new mongoose.Schema({
@@ -76,31 +77,33 @@ UsersSchema.statics.login = async function (username, password) {
 };
 
 // static upload method
-UsersSchema.statics.upload = async function (
-  userId,
-  imageId,
-  desc,
-  public,
-  tags
-) {
+UsersSchema.statics.upload = async function (imageInfo) {
+  const {
+    username: userId,
+    id: imageId,
+    description: desc,
+    public: publ,
+    tags: tags,
+    date: date,
+  } = imageInfo;
+
   if (!userId) {
     throw Error("Invalid userId! Please login before continuing.");
-  }
-  if (!imageId) {
-    throw Error("Invalid image format.");
   }
 
   const user = await this.findOne({ username: userId });
 
-  const imageInfo = {
+  const image = {
     id: imageId,
     description: desc,
-    public: public,
+    public: publ,
     tags: tags,
     likes: 0,
+    date: date,
   };
-  console.log(imageInfo);
-  user.images.push(imageInfo);
+
+  console.log(image);
+  user.images.push(image);
   user.save();
 };
 
@@ -128,6 +131,11 @@ UsersSchema.statics.likes = async function (userId, imageId) {
 
   userImage.likes += 1;
   user.save();
+};
+
+// static users method
+UsersSchema.statics.allUsers = async function () {
+  return this.find();
 };
 
 const UserModel = mongoose.model("users", UsersSchema);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export const useRetrieve = (userId, refetch) => {
+export const useRetrieveAll = (userId, refetch) => {
   const [state, setState] = useState({
     data: null,
     isLoading: true,
@@ -8,8 +8,8 @@ export const useRetrieve = (userId, refetch) => {
   });
 
   useEffect(() => {
-    const retrieve = async () => {
-      const response = await fetch("http://localhost:4000/api/user/retrieve", {
+    const retrieveAll = async () => {
+      const response = await fetch("http://localhost:4000/api/user/allImages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: userId }),
@@ -27,7 +27,7 @@ export const useRetrieve = (userId, refetch) => {
       }
     };
 
-    retrieve();
+    retrieveAll();
   }, [userId, refetch]);
 
   return state;
