@@ -24,6 +24,9 @@ const ErrorText = ({ children, ...props }) => (
 
 const cloud_name = "dn2csumoj";
 
+const years = [2023, 2022, 2021, 2020, 2019, 2018];
+const sortOptions = ["Most recent", "Most favourited"];
+
 const Gallery = () => {
   const {
     data: images,
@@ -32,6 +35,8 @@ const Gallery = () => {
   } = useRetrieveAll();
 
   const [filterTag, setFilterTag] = useState("");
+  const [filterYear, setFilterYear] = useState("");
+  const [sortOption, setSortOption] = useState("Most recent");
   const [filtered, setFiltered] = useState([]);
 
   const tags = {};
@@ -59,8 +64,8 @@ const Gallery = () => {
     return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
   };
 
-  const handleSelect = (e) => {
-    return setFilterTag(e.target.value);
+  const handleSelect = (e, setFilter) => {
+    return setFilter(e.target.value);
   };
 
   const handleFilter = () => {
@@ -69,10 +74,21 @@ const Gallery = () => {
       .map((obj) => {
         return { ...obj, date: new Date(obj.date) };
       })
-      .sort((a, b) => b.date - a.date);
 
     if (filterTag !== "") {
-      filtered = filtered.filter((img) => img.tags.includes(filterTag));
+      filtered = filtered?.filter((img) => img.tags.includes(filterTag));
+    }
+
+    if (filterYear !== "") {
+      filtered = filtered?.filter(
+        (img) => img.date.getFullYear().toString() === filterYear
+      );
+    }
+
+    if (sortOption === "Most favourited") {
+      filtered = filtered?.sort((a, b) => b.likes - a.likes)
+    } else if (sortOption === "Most recent") {
+      filtered = filtered?.sort((a, b) => b.date - a.date)
     }
 
     setFiltered(filtered);
@@ -90,10 +106,30 @@ const Gallery = () => {
       </Text>
 
       <Stack direction={"row"}>
-        <Select placeholder="Select tags" onChange={handleSelect}>
+        <Select
+          placeholder="Select tags"
+          onChange={(e) => handleSelect(e, setFilterTag)}
+        >
           {Object.keys(tags).map((tag) => (
             <option value={tag} key={tag}>
               {tag + " " + tags[tag]}
+            </option>
+          ))}
+        </Select>
+        <Select
+          placeholder="Select Year"
+          onChange={(e) => handleSelect(e, setFilterYear)}
+        >
+          {years.map((year) => (
+            <option value={year} key={year}>
+              {year}
+            </option>
+          ))}
+        </Select>
+        <Select onChange={(e) => handleSelect(e, setSortOption)}>
+          {sortOptions.map((opt) => (
+            <option value={opt} key={opt}>
+              {opt}
             </option>
           ))}
         </Select>
@@ -133,7 +169,7 @@ const Gallery = () => {
               </Button>
               {likesError && <ErrorText>Likes malfunction</ErrorText>}
               <Text fontSize={"md"} noOfLines={2}>
-                {img.description}
+                {img.date.toString()}
               </Text>{" "}
             </Box>
           ))}
