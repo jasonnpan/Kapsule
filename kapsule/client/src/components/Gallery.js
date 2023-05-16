@@ -11,7 +11,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Favorite } from "@mui/icons-material";
 import { useLikes } from "../hooks/useLikes";
 import { useRetrieveAll } from "../hooks/useRetrieveAll";
@@ -32,11 +32,11 @@ const Gallery = () => {
   } = useRetrieveAll();
 
   const [filterTag, setFilterTag] = useState("");
-  const [filtered, setFiltered] = useState(null);
+  const [filtered, setFiltered] = useState([]);
 
   const tags = {};
-  images?.map((img) => {
-    img.tags?.map((tag) => {
+  images?.forEach((img) => {
+    img.tags?.forEach((tag) => {
       if (tags[tag]) {
         tags[tag] += 1;
       } else {
@@ -45,17 +45,11 @@ const Gallery = () => {
     });
   });
 
-  const sortedImages = images
-    ?.filter((img) => img.public)
-    .map((obj) => {
-      return { ...obj, date: new Date(obj.date) };
-    })
-    .sort((a, b) => b.date - a.date);
-
   const { likes, error: likesError } = useLikes();
 
-  const handleLikes = async (index) => {
-    const img = sortedImages[index];
+  const handleLikes = async (arr, index) => {
+    arr[index].likes += 1;
+    const img = arr[index];
     images.find((a) => a.id === img.id).likes += 1;
     const likesInfo = { username: img.author, id: img.id };
     await likes(likesInfo);
@@ -77,12 +71,17 @@ const Gallery = () => {
       })
       .sort((a, b) => b.date - a.date);
 
-    if (filterTag != "") {
+    if (filterTag !== "") {
       filtered = filtered.filter((img) => img.tags.includes(filterTag));
     }
 
     setFiltered(filtered);
   };
+
+  useEffect(() => {
+    handleFilter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [images]);
 
   return (
     <Flex mt={6} flexDirection={"column"}>
@@ -128,27 +127,7 @@ const Gallery = () => {
               </AspectRatio>
               <Button
                 leftIcon={<Favorite />}
-                onClick={() => handleLikes(index)}
-              >
-                <Text>{img.likes}</Text>
-              </Button>
-              {likesError && <ErrorText>Likes malfunction</ErrorText>}
-              <Text fontSize={"md"} noOfLines={2}>
-                {img.description}
-              </Text>{" "}
-            </Box>
-          ))}
-
-        {sortedImages?.length > 0 &&
-          !filtered &&
-          sortedImages.map((img, index) => (
-            <Box key={img.id} p={2}>
-              <AspectRatio w={"auto"} ratio={1}>
-                <Image src={getUrl(img.id)} alt="" objectFit="cover" />
-              </AspectRatio>
-              <Button
-                leftIcon={<Favorite />}
-                onClick={() => handleLikes(index)}
+                onClick={() => handleLikes(filtered, index)}
               >
                 <Text>{img.likes}</Text>
               </Button>

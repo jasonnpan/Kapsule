@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
-import Discover from "./pages/Discover";
+import Search from "./pages/Search";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/discover" element={<Discover />} />
+            <Route path="/search" element={<Search />} />
           </Routes>
         </div>
       </BrowserRouter>
