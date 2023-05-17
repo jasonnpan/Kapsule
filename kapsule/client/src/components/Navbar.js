@@ -25,6 +25,17 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import { Close, LightMode, DarkMode, Person } from "@mui/icons-material";
 
+const NAV_ITEMS = [
+  {
+    label: "Popular",
+    link: "/popular",
+  },
+  {
+    label: "Search",
+    link: "/search",
+  },
+];
+
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onToggle } = useDisclosure();
@@ -40,6 +51,10 @@ const Navbar = () => {
     logout();
     navigate("/");
   };
+
+  const handleSettings = () => {
+    navigate("/settings")
+  }
 
   return (
     <Box position={"absolute"} w={"100%"}>
@@ -151,7 +166,7 @@ const Navbar = () => {
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                <MenuItem>Settings</MenuItem>
+                <MenuItem onClick={handleSettings}>Settings</MenuItem>
                 <MenuDivider />
                 <MenuItem onClick={handleLogOut}>Log out</MenuItem>
               </MenuList>
@@ -220,17 +235,4 @@ const MobileNav = () => {
   );
 };
 
-const NAV_ITEMS = [
-  {
-    label: "Popular",
-    link: "/popular",
-  },
-  {
-    label: "Discover",
-    link: "/discover",
-  },
-  {
-    label: "Search",
-    link: "/search",
-  },
-];
+

@@ -7,6 +7,9 @@ import Signup from "./pages/Signup";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import Search from "./pages/Search";
+import Popular from "./pages/Popular";
+import Settings from "./pages/Settings";
+
 
 function App() {
   return (
@@ -20,6 +23,8 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/popular" element={<Popular />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </BrowserRouter>

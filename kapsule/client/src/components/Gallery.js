@@ -9,6 +9,7 @@ import {
   Box,
   Stack,
   Select,
+  Input,
 } from "@chakra-ui/react";
 
 import { useState, useEffect } from "react";
@@ -27,16 +28,17 @@ const cloud_name = "dn2csumoj";
 const years = [2023, 2022, 2021, 2020, 2019, 2018];
 const sortOptions = ["Most recent", "Most favourited"];
 
-const Gallery = () => {
+const Gallery = ({ title, initialSort }) => {
   const {
     data: images,
     isLoading: retrieving,
     error: retrieveErr,
   } = useRetrieveAll();
 
+  const [search, setSearch] = useState("");
   const [filterTag, setFilterTag] = useState("");
   const [filterYear, setFilterYear] = useState("");
-  const [sortOption, setSortOption] = useState("Most recent");
+  const [sortOption, setSortOption] = useState(initialSort);
   const [filtered, setFiltered] = useState([]);
 
   const tags = {};
@@ -73,7 +75,7 @@ const Gallery = () => {
       ?.filter((img) => img.public)
       .map((obj) => {
         return { ...obj, date: new Date(obj.date) };
-      })
+      });
 
     if (filterTag !== "") {
       filtered = filtered?.filter((img) => img.tags.includes(filterTag));
@@ -86,9 +88,13 @@ const Gallery = () => {
     }
 
     if (sortOption === "Most favourited") {
-      filtered = filtered?.sort((a, b) => b.likes - a.likes)
+      filtered = filtered?.sort((a, b) => b.likes - a.likes);
     } else if (sortOption === "Most recent") {
-      filtered = filtered?.sort((a, b) => b.date - a.date)
+      filtered = filtered?.sort((a, b) => b.date - a.date);
+    }
+
+    if (search !== "") {
+      filtered = filtered?.filter((img) => img.description.includes(search));
     }
 
     setFiltered(filtered);
@@ -101,11 +107,15 @@ const Gallery = () => {
 
   return (
     <Flex mt={6} flexDirection={"column"}>
-      <Text textAlign={"left"} fontSize={"4xl"} mb={2}>
-        Discover
+      <Text textAlign={"left"} fontSize={"4xl"} mx={2} mb={2}>
+        {title}
       </Text>
 
-      <Stack direction={"row"}>
+      <Stack direction={"row"} mx={2} spacing={4}>
+        <Input
+          placeholder="Search image..."
+          onChange={(e) => handleSelect(e, setSearch)}
+        ></Input>
         <Select
           placeholder="Select tags"
           onChange={(e) => handleSelect(e, setFilterTag)}
@@ -126,14 +136,14 @@ const Gallery = () => {
             </option>
           ))}
         </Select>
-        <Select onChange={(e) => handleSelect(e, setSortOption)}>
+        <Select value={initialSort} onChange={(e) => handleSelect(e, setSortOption)}>
           {sortOptions.map((opt) => (
             <option value={opt} key={opt}>
               {opt}
             </option>
           ))}
         </Select>
-        <Button onClick={handleFilter}>Filter</Button>
+        <Button onClick={handleFilter} px={8}>Filter</Button>
       </Stack>
 
       {retrieving && (
@@ -154,7 +164,7 @@ const Gallery = () => {
           No images found
         </Text>
       )}
-      <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
+      <SimpleGrid columns={[4, 5, 6]} spacing={4} mt={4} listStyleType={"none"}>
         {filtered?.length > 0 &&
           filtered.map((img, index) => (
             <Box key={img.id} p={2}>
@@ -170,7 +180,10 @@ const Gallery = () => {
               {likesError && <ErrorText>Likes malfunction</ErrorText>}
               <Text fontSize={"md"} noOfLines={2}>
                 {img.date.toString()}
-              </Text>{" "}
+              </Text>
+              <Text fontSize={"md"} noOfLines={2}>
+                {img.description}
+              </Text>
             </Box>
           ))}
       </SimpleGrid>
