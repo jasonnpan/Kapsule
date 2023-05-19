@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const userRoutes = require("./routes/user");
+const sha1 = require("sha1")
 
 // cloud
 const cloudinary = require("cloudinary").v2;
@@ -31,19 +32,28 @@ mongoose.connect(
 );
 
 app.get("/get-signature", (req, res) => {
-  const timestamp = Math.round(new Date().getTime() / 1000)
+  const timestamp = Math.round(new Date().getTime() / 1000);
   const signature = cloudinary.utils.api_sign_request(
     {
-      timestamp: timestamp
+      timestamp: timestamp,
     },
     cloudinaryConfig.api_secret
-  )
-  res.json({ timestamp, signature })
-})
+  );
+  res.json({ timestamp, signature });
+});
+
+app.post("/find-signature", async (req, res) => {
+  const { imgId: imgId } = req.body;
+  const timestamp = new Date().getTime();
+  const string = `public_id=${imgId}&timestamp=${timestamp}${cloudinaryConfig.api_secret}`;
+  const signature = await sha1(string);
+
+  res.status(200).json({ timestamp, signature });
+});
 
 app.post("/upload", (req, res) => {
   console.log(req.data);
-})
+});
 
 // success message if server runs
 app.listen(PORT, () => {

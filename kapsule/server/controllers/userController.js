@@ -39,7 +39,6 @@ const signupUser = async (req, res) => {
 
 // upload image
 const uploadImg = async (req, res) => {
-
   try {
     await User.upload(req.body);
     res.status(200).json("successful upload");
@@ -91,6 +90,18 @@ const getAllImages = async (req, res) => {
   }
 };
 
+// removeImage
+const removeImage = async (req, res) => {
+  const { username: userId, id: imageId } = req.body;
+
+  try {
+    await User.delete(userId, imageId);
+    res.status(200).json("successful delete");
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -98,4 +109,5 @@ module.exports = {
   retrieveImg,
   addLikes,
   getAllImages,
+  removeImage
 };

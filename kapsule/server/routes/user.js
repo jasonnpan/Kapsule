@@ -8,6 +8,7 @@ const {
   retrieveImg,
   addLikes,
   getAllImages,
+  removeImage,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -29,5 +30,8 @@ router.post("/likes", addLikes);
 
 // users route
 router.post("/allImages", getAllImages);
+
+// delete route
+router.post("/delete", removeImage)
 
 module.exports = router;

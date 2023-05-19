@@ -7,10 +7,12 @@ import {
   Flex,
   Button,
   Box,
+  CloseButton,
 } from "@chakra-ui/react";
 
 import { Favorite } from "@mui/icons-material";
 import { useLikes } from "../hooks/useLikes";
+import axiosClient from "../config/axios";
 
 const ErrorText = ({ children, ...props }) => (
   <Text fontSize="lg" color="red.300" {...props}>
@@ -19,6 +21,7 @@ const ErrorText = ({ children, ...props }) => (
 );
 
 const cloud_name = "dn2csumoj";
+const api_key = "745634272993468";
 const user = JSON.parse(localStorage.getItem("user"));
 
 const Posts = ({ retrieveState }) => {
@@ -44,6 +47,24 @@ const Posts = ({ retrieveState }) => {
 
   const getUrl = (imageId) => {
     return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
+  };
+
+  const handleDelete = async (imgId) => {
+    const signatureResponse = await axiosClient.post("/find-signature", {
+      imgId,
+    });
+    const formData = new FormData();
+    formData.append("public_id", imgId);
+    formData.append("signature", signatureResponse.data.signature);
+    formData.append("api_key", api_key);
+    formData.append("timestamp", signatureResponse.data.timestamp);
+
+    const res = await axiosClient.post(
+      `https://api.cloudinary.com/v1_1/${cloud_name}/image/destroy`,
+      formData
+    );
+
+    console.log(res.status)
   };
 
   return (
@@ -72,7 +93,15 @@ const Posts = ({ retrieveState }) => {
       <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
         {sortedImages?.length > 0 &&
           sortedImages.map((img, index) => (
-            <Box key={img.id}>
+            <Box key={img.id} pos={"relative"}>
+              <CloseButton
+                pos={"absolute"}
+                top={0}
+                right={0}
+                zIndex={1}
+                _active={{ color: "red" }}
+                onClick={() => handleDelete(img.id)}
+              />
               <AspectRatio w={"auto"} ratio={1}>
                 <Image src={getUrl(img.id)} alt="" objectFit="cover" />
               </AspectRatio>
