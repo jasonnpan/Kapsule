@@ -25,9 +25,9 @@ const Profile = () => {
 
   return (
     <Box textAlign="center" fontSize="2xl" p={5}>
-      <ProfileImage />
+      <ProfileImage  />
       <Upload setUpdate={setUpdate} />
-      <Posts retrieveState={retrieveState} />
+      <Posts setUpdate={setUpdate} retrieveState={retrieveState} />
     </Box>
   );
 };

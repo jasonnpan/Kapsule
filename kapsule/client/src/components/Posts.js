@@ -12,6 +12,7 @@ import {
 
 import { Favorite } from "@mui/icons-material";
 import { useLikes } from "../hooks/useLikes";
+import { useRemove } from "../hooks/useRemove";
 import axiosClient from "../config/axios";
 
 const ErrorText = ({ children, ...props }) => (
@@ -24,12 +25,14 @@ const cloud_name = "dn2csumoj";
 const api_key = "745634272993468";
 const user = JSON.parse(localStorage.getItem("user"));
 
-const Posts = ({ retrieveState }) => {
+const Posts = ({ setUpdate, retrieveState }) => {
   const {
     data: images,
     isLoading: retrieving,
     error: retrieveErr,
   } = retrieveState;
+
+  const { remove, isLoading: removing, error: removeError } = useRemove();
 
   const sortedImages = images
     ?.map((obj) => {
@@ -63,8 +66,14 @@ const Posts = ({ retrieveState }) => {
       `https://api.cloudinary.com/v1_1/${cloud_name}/image/destroy`,
       formData
     );
-
-    console.log(res.status)
+  
+    const removeInfo = {
+      username: user.username,
+      id: imgId,
+    };
+    
+    remove(removeInfo);
+    setUpdate(true);
   };
 
   return (
