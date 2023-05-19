@@ -75,10 +75,6 @@ const Upload = ({ setUpdate }) => {
     }
   };
 
-  const checkHandler = () => {
-    setPub(!pub);
-  };
-
   const reset = () => {
     setImage(null);
     setDescription("");
@@ -94,7 +90,7 @@ const Upload = ({ setUpdate }) => {
     reset();
   };
 
-  const addTag = () => {
+  const handleAddTag = () => {
     if (!(tags.indexOf(newTag) > -1)) {
       setTags([...tags, newTag]);
     }
@@ -103,7 +99,7 @@ const Upload = ({ setUpdate }) => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      addTag();
+      handleAddTag();
     }
   };
 
@@ -146,6 +142,11 @@ const Upload = ({ setUpdate }) => {
     onClose();
   };
 
+  const handleRemoveTag = (tag) => {
+    const newTags = tags.filter((x) => x !== tag);
+    setTags(newTags);
+  };
+
   return (
     <Box>
       <Button onClick={openHandler} colorScheme="blue" variant="outline">
@@ -183,7 +184,7 @@ const Upload = ({ setUpdate }) => {
 
             <FormControl mt={4}>
               <FormLabel>Public</FormLabel>
-              <Checkbox defaultChecked={pub} onChange={checkHandler} />
+              <Checkbox defaultChecked={pub} onChange={() => setPub(!pub)} />
             </FormControl>
 
             <FormControl mt={4}>
@@ -197,7 +198,7 @@ const Upload = ({ setUpdate }) => {
                 ></Input>
                 <InputRightElement>
                   <Button
-                    onClick={addTag}
+                    onClick={handleAddTag}
                     colorScheme="blue"
                     variant={"outline"}
                   >
@@ -216,7 +217,7 @@ const Upload = ({ setUpdate }) => {
                   m={1}
                 >
                   <TagLabel>{item}</TagLabel>
-                  <TagCloseButton />
+                  <TagCloseButton onClick={() => handleRemoveTag(item)}/>
                 </Tag>
               ))}
             </FormControl>

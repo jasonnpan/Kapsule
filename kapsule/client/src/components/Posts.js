@@ -10,9 +10,11 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 
+import ImageOptions from "./ImageOptions";
 import { Favorite } from "@mui/icons-material";
 import { useMutation } from "../hooks/useMutation";
 import axiosClient from "../config/axios";
+import { useState } from "react";
 
 const ErrorText = ({ children, ...props }) => (
   <Text fontSize="lg" color="red.300" {...props}>
@@ -37,26 +39,22 @@ const Posts = ({ setUpdate, retrieveState }) => {
     error: removeError,
   } = useMutation("delete");
 
-  const sortedImages = images
-    ?.map((obj) => {
-      return { ...obj, date: new Date(obj.date) };
-    })
-    .sort((a, b) => b.date - a.date);
-
   const {
     fn: likes,
     isLoading: liking,
     error: likesError,
   } = useMutation("likes");
 
+  const sortedImages = images
+    ?.map((obj) => {
+      return { ...obj, date: new Date(obj.date) };
+    })
+    .sort((a, b) => b.date - a.date);
+
   const handleLikes = async (id, revIndex) => {
     images[images.length - revIndex - 1].likes += 1;
     const likesInfo = { username: user.username, id: id };
     await likes(likesInfo);
-  };
-
-  const getUrl = (imageId) => {
-    return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
   };
 
   const handleDelete = async (imgId) => {
@@ -81,6 +79,17 @@ const Posts = ({ setUpdate, retrieveState }) => {
 
     remove(removeInfo);
     setUpdate(true);
+  };
+
+  const [openOptions, setOpenOptions] = useState(false);
+  const [imageInfo, setImageInfo] = useState("");
+  const handleImage = (img) => {
+    setImageInfo(img);
+    setOpenOptions(true);
+  };
+
+  const getUrl = (imageId) => {
+    return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
   };
 
   return (
@@ -109,7 +118,17 @@ const Posts = ({ setUpdate, retrieveState }) => {
       <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
         {sortedImages?.length > 0 &&
           sortedImages.map((img, index) => (
-            <Box key={img.id} pos={"relative"}>
+            <Box
+              key={img.id}
+              pos={"relative"}
+              _hover={{
+                p: 1,
+                opacity: 0.8,
+                transition: "1s ease",
+                cursor: "pointer",
+              }}
+              onClick={() => handleImage(img)}
+            >
               <CloseButton
                 pos={"absolute"}
                 top={0}
@@ -134,6 +153,14 @@ const Posts = ({ setUpdate, retrieveState }) => {
             </Box>
           ))}
       </SimpleGrid>
+
+      {openOptions && (
+        <ImageOptions
+          open={openOptions}
+          setOpen={setOpenOptions}
+          img={imageInfo}
+        />
+      )}
     </Flex>
   );
 };
