@@ -14,8 +14,8 @@ import {
 
 import { useState, useEffect } from "react";
 import { Favorite } from "@mui/icons-material";
-import { useLikes } from "../hooks/useLikes";
 import { useRetrieveAll } from "../hooks/useRetrieveAll";
+import { useMutation } from "../hooks/useMutation";
 
 const ErrorText = ({ children, ...props }) => (
   <Text fontSize="lg" color="red.300" {...props}>
@@ -52,7 +52,7 @@ const Gallery = ({ title, initialSort }) => {
     });
   });
 
-  const { likes, error: likesError } = useLikes();
+  const { fn: likes, isLoading: liking, error: likesError } = useMutation();
 
   const handleLikes = async (arr, index) => {
     arr[index].likes += 1;
@@ -136,14 +136,19 @@ const Gallery = ({ title, initialSort }) => {
             </option>
           ))}
         </Select>
-        <Select value={initialSort} onChange={(e) => handleSelect(e, setSortOption)}>
+        <Select
+          value={initialSort}
+          onChange={(e) => handleSelect(e, setSortOption)}
+        >
           {sortOptions.map((opt) => (
             <option value={opt} key={opt}>
               {opt}
             </option>
           ))}
         </Select>
-        <Button onClick={handleFilter} px={8}>Filter</Button>
+        <Button onClick={handleFilter} px={8}>
+          Filter
+        </Button>
       </Stack>
 
       {retrieving && (

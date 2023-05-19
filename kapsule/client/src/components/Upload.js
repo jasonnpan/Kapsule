@@ -1,8 +1,6 @@
 import { useState } from "react";
 import axiosClient from "../config/axios";
 
-import { useUpload } from "../hooks/useUpload";
-
 import {
   Box,
   useDisclosure,
@@ -26,6 +24,7 @@ import {
   InputGroup,
   Text,
 } from "@chakra-ui/react";
+import { useMutation } from "../hooks/useMutation";
 
 const user = JSON.parse(localStorage.getItem("user"));
 const cloud_name = "dn2csumoj";
@@ -102,7 +101,7 @@ const Upload = ({ setUpdate }) => {
     setNewTag("");
   };
 
-  const { upload, uploading, uploadErr } = useUpload();
+  const { fn: upload, isLoading: uploading, error: uploadErr } = useMutation("upload");
   const [uploadError, setUploadError] = useState("");
 
   const handleUpload = async () => {
@@ -156,7 +155,7 @@ const Upload = ({ setUpdate }) => {
                 <Image
                   mt={2}
                   boxSize={100}
-                  objectFit={'cover'}
+                  objectFit={"cover"}
                   alt="preview image"
                   src={imageURL}
                 />

@@ -11,8 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import { Favorite } from "@mui/icons-material";
-import { useLikes } from "../hooks/useLikes";
-import { useRemove } from "../hooks/useRemove";
+import { useMutation } from "../hooks/useMutation";
 import axiosClient from "../config/axios";
 
 const ErrorText = ({ children, ...props }) => (
@@ -32,7 +31,11 @@ const Posts = ({ setUpdate, retrieveState }) => {
     error: retrieveErr,
   } = retrieveState;
 
-  const { remove, isLoading: removing, error: removeError } = useRemove();
+  const {
+    fn: remove,
+    isLoading: removing,
+    error: removeError,
+  } = useMutation("delete");
 
   const sortedImages = images
     ?.map((obj) => {
@@ -40,7 +43,11 @@ const Posts = ({ setUpdate, retrieveState }) => {
     })
     .sort((a, b) => b.date - a.date);
 
-  const { likes, error: likesError } = useLikes();
+  const {
+    fn: likes,
+    isLoading: liking,
+    error: likesError,
+  } = useMutation("likes");
 
   const handleLikes = async (id, revIndex) => {
     images[images.length - revIndex - 1].likes += 1;
@@ -66,12 +73,12 @@ const Posts = ({ setUpdate, retrieveState }) => {
       `https://api.cloudinary.com/v1_1/${cloud_name}/image/destroy`,
       formData
     );
-  
+
     const removeInfo = {
       username: user.username,
       id: imgId,
     };
-    
+
     remove(removeInfo);
     setUpdate(true);
   };
