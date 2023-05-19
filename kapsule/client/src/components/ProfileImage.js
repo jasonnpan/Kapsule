@@ -19,8 +19,12 @@ import {
 } from "@chakra-ui/react";
 
 import { useState } from "react";
+import axiosClient from "../config/axios";
 
-import profile from "../assets/profile.png";
+import Pic from "../assets/profile.png";
+
+const cloud_name = "dn2csumoj";
+const api_key = "745634272993468";
 
 const validFileTypes = ["image/jpg", "image/jpeg", "image/png"];
 
@@ -79,12 +83,46 @@ const ProfileImage = () => {
     }
   };
 
+  const handleDelete = async (imgId) => {
+    const signatureResponse = await axiosClient.post("/find-signature", {
+      imgId,
+    });
+    const formData = new FormData();
+    formData.append("public_id", imgId);
+    formData.append("signature", signatureResponse.data.signature);
+    formData.append("api_key", api_key);
+    formData.append("timestamp", signatureResponse.data.timestamp);
+
+    const res = await axiosClient.post(
+      `https://api.cloudinary.com/v1_1/${cloud_name}/image/destroy`,
+      formData
+    );
+  };
+
   const handleUpload = async () => {
-    console.log(image)
-    localStorage.setItem("ProfileImage", image);
+    handleDelete(user.profile);
+
+    const signatureResponse = await axiosClient.get("/get-signature");
+    const data = new FormData();
+    data.append("file", image);
+    data.append("api_key", api_key);
+    data.append("signature", signatureResponse.data.signature);
+    data.append("timestamp", signatureResponse.data.timestamp);
+    const cloudRes = await axiosClient.post(
+      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+      data,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+
+    user["profile"] = cloudRes.data.public_id;
+    localStorage.setItem("user", JSON.stringify(user));
 
     onClose();
     window.location.reload(false);
+  };
+
+  const getUrl = (imageId) => {
+    return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
   };
 
   return (
@@ -94,7 +132,7 @@ const ProfileImage = () => {
           <Avatar
             borderRadius="full"
             size={"2xl"}
-            src={profile}
+            src={user.profile ? getUrl(user.profile) : Pic}
             alt="Profile"
             bg={useColorModeValue("white", "gray.100")}
             style={style}

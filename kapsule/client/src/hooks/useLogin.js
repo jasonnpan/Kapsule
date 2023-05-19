@@ -29,8 +29,10 @@ export const useLogin = () => {
 
       // update auth context
       dispatch({ type: "LOGIN", payload: json });
+      
       navigate("/");
 
+      navigate(0)
       setIsLoading(false);
     }
   };
