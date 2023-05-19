@@ -101,7 +101,17 @@ const Upload = ({ setUpdate }) => {
     setNewTag("");
   };
 
-  const { fn: upload, isLoading: uploading, error: uploadErr } = useMutation("upload");
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addTag();
+    }
+  };
+
+  const {
+    fn: upload,
+    isLoading: uploading,
+    error: uploadErr,
+  } = useMutation("upload");
   const [uploadError, setUploadError] = useState("");
 
   const handleUpload = async () => {
@@ -183,6 +193,7 @@ const Upload = ({ setUpdate }) => {
                   value={newTag}
                   placeholder="Add your favourite tags !!!"
                   onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={handleKeyPress}
                 ></Input>
                 <InputRightElement>
                   <Button

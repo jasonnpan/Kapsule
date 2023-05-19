@@ -106,12 +106,12 @@ const Gallery = ({ title, initialSort }) => {
   }, [images]);
 
   return (
-    <Flex mt={6} flexDirection={"column"}>
-      <Text textAlign={"left"} fontSize={"4xl"} mx={2} mb={2}>
+    <Flex mt={6} flexDirection={"column"} mx={2}>
+      <Text textAlign={"left"} fontSize={"4xl"} mb={2}>
         {title}
       </Text>
 
-      <Stack direction={"row"} mx={2} spacing={4}>
+      <Stack direction={"row"}  spacing={4}>
         <Input
           placeholder="Search image..."
           onChange={(e) => handleSelect(e, setSearch)}
@@ -191,6 +191,7 @@ const Gallery = ({ title, initialSort }) => {
               </Text>
             </Box>
           ))}
+          {filtered?.length === 0 && (<Text>No public images</Text>)}
       </SimpleGrid>
     </Flex>
   );
