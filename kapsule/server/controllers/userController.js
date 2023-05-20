@@ -102,6 +102,18 @@ const removeImage = async (req, res) => {
   }
 };
 
+// updateImg
+const updateImg = async (req, res) => {
+  const imageInfo = req.body;
+
+  try {
+    await User.updateImage(imageInfo);
+    res.status(200).json("successful update");
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -109,5 +121,6 @@ module.exports = {
   retrieveImg,
   addLikes,
   getAllImages,
-  removeImage
+  removeImage,
+  updateImg
 };

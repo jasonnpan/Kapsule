@@ -118,17 +118,7 @@ const Posts = ({ setUpdate, retrieveState }) => {
       <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
         {sortedImages?.length > 0 &&
           sortedImages.map((img, index) => (
-            <Box
-              key={img.id}
-              pos={"relative"}
-              _hover={{
-                p: 1,
-                opacity: 0.8,
-                transition: "1s ease",
-                cursor: "pointer",
-              }}
-              onClick={() => handleImage(img)}
-            >
+            <Box key={img.id} pos={"relative"}>
               <CloseButton
                 pos={"absolute"}
                 top={0}
@@ -138,7 +128,18 @@ const Posts = ({ setUpdate, retrieveState }) => {
                 onClick={() => handleDelete(img.id)}
               />
               <AspectRatio w={"auto"} ratio={1}>
-                <Image src={getUrl(img.id)} alt="" objectFit="cover" />
+                <Image
+                  src={getUrl(img.id)}
+                  alt=""
+                  objectFit="cover"
+                  _hover={{
+                    p: 1,
+                    opacity: 0.8,
+                    transition: "1s ease",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleImage(img)}
+                />
               </AspectRatio>
               <Button
                 leftIcon={<Favorite />}

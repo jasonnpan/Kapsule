@@ -151,8 +151,41 @@ UsersSchema.statics.delete = async function (userId, imageId) {
   const userImage = user.images.find((element) => element.id == imageId);
 
   user.images.pull(userImage);
-  user.save()
-}
+  user.save();
+};
+
+// static update method
+UsersSchema.statics.updateImage = async function (imageInfo) {
+  const {
+    username: userId,
+    id: imageId,
+    description: desc,
+    public: publ,
+    tags: tags,
+    date: date,
+  } = imageInfo;
+
+  if (!userId) {
+    throw Error("Invalid userId! Please login before continuing.");
+  }
+
+  const user = await this.findOne({ username: userId });
+  const userImage = user.images.find((element) => element.id == imageId);
+  const index = user.images.indexOf(userImage);
+
+  const newImage = {
+    author: userImage.author,
+    id: userImage.id,
+    description: desc,
+    public: publ,
+    tags: tags,
+    likes: userImage.likes,
+    date: date,
+  };
+
+  user.images[index] = newImage;
+  user.save();
+};
 
 const UserModel = mongoose.model("users", UsersSchema);
 module.exports = UserModel;

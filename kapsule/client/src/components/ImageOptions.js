@@ -23,16 +23,41 @@ import {
 } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
+import { useMutation } from "../hooks/useMutation";
 
 const ImageOptions = ({ open, setOpen, img }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [error, setError] = useState("");
+  const [description, setDescription] = useState(img.description);
+  const [pub, setPub] = useState(img.pub);
+  const [tags, setTags] = useState(img.tags);
+  const [newTag, setNewTag] = useState("");
+  
 
   useEffect(() => {
     if (open) onOpen();
   }, [open]);
 
-  const handleUpdate = () => {};
+  const {
+    fn: update,
+    isLoading: updating,
+    error: updateErr,
+  } = useMutation("update");
+
+  const handleUpdate = async () => {
+    const updateInfo = {
+      username: img.author,
+      id: img.id,
+      description: description,
+      public: pub,
+      tags: tags,
+      date: Date().toLocaleString(),
+    };
+
+    await update(updateInfo);
+    handleClose();
+    window.location.reload(false);
+  };
 
   const handleClose = () => {
     onClose();
@@ -43,6 +68,7 @@ const ImageOptions = ({ open, setOpen, img }) => {
     if (!(tags.indexOf(newTag) > -1)) {
       setTags([...tags, newTag]);
     }
+    
     setNewTag("");
   };
 
@@ -57,17 +83,12 @@ const ImageOptions = ({ open, setOpen, img }) => {
     setTags(newTags);
   };
 
-  const [description, setDescription] = useState(img.description);
-  const [pub, setPub] = useState(img.pub);
-  const [tags, setTags] = useState(img.tags);
-  const [newTag, setNewTag] = useState("");
-
   return (
     <Box>
       <Modal isOpen={isOpen} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Change Profile</ModalHeader>
+          <ModalHeader>Update image</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl mt={4}>
