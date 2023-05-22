@@ -27,9 +27,11 @@ const Signup = () => {
     await signup(username, password);
   };
 
+  const [terms, setTerms] = useState(false);
+
   return (
     <Flex
-    pt={10}
+      pt={10}
       minH={"100vh"}
       align={"center"}
       justify={"center"}
@@ -68,17 +70,18 @@ const Signup = () => {
                 <Stack direction={"row"} spacing={1}>
                   <Text display={"inline"}>I agree to the</Text>
                   <Text
-                    
                     color={"blue.400"}
                     _hover={{
                       textDecoration: "underline",
                       cursor: "pointer",
                     }}
+                    onClick={() => setTerms(!terms)}
                   >
                     Terms and Conditions
                   </Text>
                 </Stack>
               </Stack>
+              {terms && <Box color={'red.300'}>There are currently no terms and conditions</Box>}
 
               <Button
                 type="submit"

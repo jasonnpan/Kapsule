@@ -23,7 +23,9 @@ import {
 
 import MenuIcon from "@mui/icons-material/Menu";
 
-import { Close, LightMode, DarkMode, Person } from "@mui/icons-material";
+import { Close, LightMode, DarkMode } from "@mui/icons-material";
+
+import Pic from "../assets/profile.png";
 
 const NAV_ITEMS = [
   {
@@ -35,6 +37,9 @@ const NAV_ITEMS = [
     link: "/search",
   },
 ];
+
+
+const cloud_name = "dn2csumoj";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -52,9 +57,9 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const handleSettings = () => {
-    navigate("/settings")
-  }
+  const getUrl = (imageId) => {
+    return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
+  };
 
   return (
     <Box position={"absolute"} w={"100%"}>
@@ -160,13 +165,16 @@ const Navbar = () => {
                 minW={0}
               >
                 <Stack direction={"row"} align={"center"} spacing={2}>
-                  <Avatar size={"sm"} src={Person} bg={"gray.300"} />
+                  <Avatar
+                    size={"sm"}
+                    src={user.profile ? getUrl(user.profile) : Pic}
+                    bg={"gray.300"}
+                  />
                   <Text>{user.username}</Text>
                 </Stack>
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                <MenuItem onClick={handleSettings}>Settings</MenuItem>
                 <MenuDivider />
                 <MenuItem onClick={handleLogOut}>Log out</MenuItem>
               </MenuList>
@@ -234,5 +242,3 @@ const MobileNav = () => {
     </Stack>
   );
 };
-
-

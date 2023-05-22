@@ -1,5 +1,6 @@
 import React from "react";
 import Background from "../assets/bg.jpg";
+import { useNavigate } from "react-router-dom";
 
 import {
   Button,
@@ -29,6 +30,19 @@ export default Home;
 
 const Desktop = () => {
   const { colorMode } = useColorMode();
+  const navigate = useNavigate();
+
+  const user = localStorage.getItem("user");
+
+  const handleGetStarted = () => {
+    if (!user) {
+      navigate("/login");
+      navigate(0);
+    } else {
+      navigate("/profile")
+      navigate(0);
+    }
+  };
 
   return (
     <Flex>
@@ -68,10 +82,10 @@ const Desktop = () => {
               _hover={{
                 bg: "blue.500",
               }}
+              onClick={handleGetStarted}
             >
               Get Started
             </Button>
-            <Button rounded={"full"}>How It Works</Button>
           </Stack>
         </Stack>
       </Flex>
@@ -84,7 +98,7 @@ const Desktop = () => {
 
 const Mobile = () => {
   const { colorMode } = useColorMode();
-  
+
   return (
     <Flex direction={"column"} mt={10}>
       <Image alt={"Login Image"} objectFit={"cover"} src={Background} />

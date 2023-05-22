@@ -10,6 +10,7 @@ const {
   getAllImages,
   removeImage,
   updateImg,
+  uploadPro,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -37,5 +38,8 @@ router.post("/delete", removeImage);
 
 // update route
 router.post("/update", updateImg);
+
+// profile route
+router.post("/profile", uploadPro);
 
 module.exports = router;

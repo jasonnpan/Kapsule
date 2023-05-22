@@ -24,14 +24,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(username);
-    console.log(password);
     await login(username, password);
   };
 
+  const [check, setCheck] = useState(false);
+  const [forgot, setForgot] = useState(false);
+
   return (
     <Flex
-    pt={10}
+      pt={10}
       minH={"100vh"}
       align={"center"}
       justify={"center"}
@@ -66,22 +67,30 @@ const Login = () => {
             </FormControl>
             <Stack spacing={6}>
               <Stack
-                direction={'row'}
+                direction={"row"}
                 align={"start"}
                 justify={"space-between"}
               >
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox
+                  defaultChecked={check}
+                  onChange={() => setCheck(!check)}
+                >
+                  Remember me
+                </Checkbox>
+
                 <Text
                   color={"blue.400"}
                   _hover={{ textDecoration: "underline", cursor: "pointer" }}
+                  onClick={() => setForgot(!forgot)}
                 >
                   Forgot password?
                 </Text>
               </Stack>
+              {check && <Box color={'red'}>Remember me has not been implemented.</Box>}
+              {forgot && <Box color={'red'}>Forgot password has not been implemented</Box>}
               <Button
                 type="submit"
                 onClick={handleSubmit}
-                
                 disabled={isLoading}
                 bg={"blue.400"}
                 color={"white"}

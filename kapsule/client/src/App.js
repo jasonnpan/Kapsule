@@ -8,7 +8,6 @@ import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import Search from "./pages/Search";
 import Popular from "./pages/Popular";
-import Settings from "./pages/Settings";
 
 
 function App() {
@@ -24,7 +23,6 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/search" element={<Search />} />
             <Route path="/popular" element={<Popular />} />
-            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </BrowserRouter>

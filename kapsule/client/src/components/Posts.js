@@ -8,13 +8,22 @@ import {
   Button,
   Box,
   CloseButton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  ButtonGroup,
 } from "@chakra-ui/react";
 
 import ImageOptions from "./ImageOptions";
 import { Favorite } from "@mui/icons-material";
 import { useMutation } from "../hooks/useMutation";
 import axiosClient from "../config/axios";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const ErrorText = ({ children, ...props }) => (
   <Text fontSize="lg" color="red.300" {...props}>
@@ -72,6 +81,7 @@ const Posts = ({ setUpdate, retrieveState }) => {
       formData
     );
 
+    console.log(res.statusText);
     const removeInfo = {
       username: user.username,
       id: imgId,
@@ -91,6 +101,8 @@ const Posts = ({ setUpdate, retrieveState }) => {
   const getUrl = (imageId) => {
     return `https://res.cloudinary.com/${cloud_name}/image/upload/${imageId}`;
   };
+
+  const initRef = useRef();
 
   return (
     <Flex mt={6} flexDirection={"column"}>
@@ -119,14 +131,47 @@ const Posts = ({ setUpdate, retrieveState }) => {
         {sortedImages?.length > 0 &&
           sortedImages.map((img, index) => (
             <Box key={img.id} pos={"relative"}>
-              <CloseButton
-                pos={"absolute"}
-                top={0}
-                right={0}
-                zIndex={1}
-                _active={{ color: "red" }}
-                onClick={() => handleDelete(img.id)}
-              />
+              <Popover closeOnBlur={false} initialFocusRef={initRef}>
+                {({ isOpen, onClose }) => (
+                  <>
+                    <PopoverTrigger>
+                      <CloseButton
+                        pos={"absolute"}
+                        top={0}
+                        right={0}
+                        zIndex={1}
+                        _active={{ color: "red" }}
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverHeader fontSize={["sm", "md", "lg"]}>
+                        Confirmation
+                      </PopoverHeader>
+                      <PopoverBody fontSize={["sm", "md"]}>
+                        Are you sure you want to continue? This image will be
+                        removed permanently.
+                      </PopoverBody>
+                      <PopoverFooter display="flex" justifyContent="flex-end">
+                        <ButtonGroup size="sm">
+                          <Button variant="outline" onClick={onClose}>
+                            Cancel
+                          </Button>
+                          <Button
+                            colorScheme="red"
+                            onClick={() => handleDelete(img.id)}
+                            isLoading={removing}
+                          >
+                            Apply
+                          </Button>
+                          {removeError && <ErrorText>{removeError}</ErrorText>}
+                        </ButtonGroup>
+                      </PopoverFooter>
+                    </PopoverContent>
+                  </>
+                )}
+              </Popover>
               <AspectRatio w={"auto"} ratio={1}>
                 <Image
                   src={getUrl(img.id)}
@@ -144,6 +189,7 @@ const Posts = ({ setUpdate, retrieveState }) => {
               <Button
                 leftIcon={<Favorite />}
                 onClick={() => handleLikes(img.id, index)}
+                isLoading={liking}
               >
                 <Text>{img.likes}</Text>
               </Button>

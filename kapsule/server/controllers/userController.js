@@ -14,8 +14,9 @@ const loginUser = async (req, res) => {
 
     // create a token (header, payload, secret)
     const token = createToken(user._id);
+    const profile = user.profile;
 
-    res.status(200).json({ username, token });
+    res.status(200).json({ username, token, profile });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -30,8 +31,9 @@ const signupUser = async (req, res) => {
 
     // create a token (header, payload, secret)
     const token = createToken(user._id);
+    const profile = user.profile;
 
-    res.status(200).json({ username, token });
+    res.status(200).json({ username, token, profile });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -114,6 +116,17 @@ const updateImg = async (req, res) => {
   }
 };
 
+const uploadPro = async (req, res) => {
+  const uploadInfo = req.body;
+
+  try {
+    await User.uploadProfile(uploadInfo);
+    res.status(200).json("successful profile upload");
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   signupUser,
   loginUser,
@@ -122,5 +135,6 @@ module.exports = {
   addLikes,
   getAllImages,
   removeImage,
-  updateImg
+  updateImg,
+  uploadPro,
 };

@@ -20,6 +20,7 @@ import {
 
 import { useState } from "react";
 import axiosClient from "../config/axios";
+import { useMutation } from "../hooks/useMutation";
 
 import Pic from "../assets/profile.png";
 
@@ -46,6 +47,12 @@ const user = JSON.parse(localStorage.getItem("user"));
 const ProfileImage = () => {
   const [hidden, setHidden] = useState(true);
   const [style, setStyle] = useState(null);
+
+  const {
+    fn: upload,
+    isLoading: uploading,
+    error: uploadError,
+  } = useMutation("/profile");
 
   const handleMouseEnter = () => {
     setHidden(false);
@@ -97,6 +104,8 @@ const ProfileImage = () => {
       `https://api.cloudinary.com/v1_1/${cloud_name}/image/destroy`,
       formData
     );
+
+    console.log(res.statusText);
   };
 
   const handleUpload = async () => {
@@ -116,6 +125,12 @@ const ProfileImage = () => {
 
     user["profile"] = cloudRes.data.public_id;
     localStorage.setItem("user", JSON.stringify(user));
+
+    const info = {
+      username: user.username,
+      profile: cloudRes.data.public_id,
+    };
+    await upload(info);
 
     onClose();
     window.location.reload(false);
@@ -185,9 +200,6 @@ const ProfileImage = () => {
         </Modal>
 
         <Text>{user.username}</Text>
-        <Text fontSize="lg" color="gray.400">
-          Software Engineer
-        </Text>
       </VStack>
     </Box>
   );

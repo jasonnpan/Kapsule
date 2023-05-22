@@ -22,6 +22,9 @@ const UsersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profile: {
+    type: String,
+  },
   images: [imageSchema],
 });
 
@@ -48,7 +51,7 @@ UsersSchema.statics.signup = async function (username, password) {
   const hash = await bcrypt.hash(password, salt);
 
   // creates user in the database
-  const user = await this.create({ username, password: hash });
+  const user = await this.create({ username, password: hash, profile: "" });
 
   return user;
 };
@@ -185,6 +188,19 @@ UsersSchema.statics.updateImage = async function (imageInfo) {
 
   user.images[index] = newImage;
   user.save();
+};
+
+// static uploadProfile
+UsersSchema.statics.uploadProfile = async function (info) {
+  const { username: userId, profile: profile } = info;
+
+  if (!userId) {
+    throw Error("Invalid userId! Please login before continuing.");
+  }
+
+  const filter = { username: userId };
+  const update = { profile: profile };
+  await this.findOneAndUpdate(filter, update);
 };
 
 const UserModel = mongoose.model("users", UsersSchema);
