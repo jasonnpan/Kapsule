@@ -16,6 +16,7 @@ import {
   Button,
   Input,
   Avatar,
+  FormControl,
 } from "@chakra-ui/react";
 
 import { useState } from "react";
@@ -52,7 +53,7 @@ const ProfileImage = () => {
     fn: upload,
     isLoading: uploading,
     error: uploadError,
-  } = useMutation("/profile");
+  } = useMutation("profile");
 
   const handleMouseEnter = () => {
     setHidden(false);
@@ -64,15 +65,22 @@ const ProfileImage = () => {
     setStyle({ opacity: 1 });
   };
 
+  const handleClose = () => {
+    onClose();
+    handleMouseLeave();
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleChangeProfile = () => {
     onOpen();
+    setImageError("");
   };
 
   const [error, setError] = useState("");
   const [image, setImage] = useState(null);
   const [imageURL, setImageURL] = useState(null);
+  const [imageError, setImageError] = useState("");
   const handleImageChange = (e) => {
     setError("");
     setImage(null);
@@ -109,6 +117,10 @@ const ProfileImage = () => {
   };
 
   const handleUpload = async () => {
+    if (!image) {
+      setImageError("Please add an image.");
+      return;
+    }
     handleDelete(user.profile);
 
     const signatureResponse = await axiosClient.get("/get-signature");
@@ -169,33 +181,43 @@ const ProfileImage = () => {
           </Text>
         </Center>
 
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={handleClose}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Change Profile</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Input onChange={handleImageChange} type="file" padding={1.5} />
-              {error && <ErrorText>{error}</ErrorText>}
-              {image && (
-                <Image
-                  mt={2}
-                  boxSize={100}
-                  objectFit={"cover"}
-                  alt="preview image"
-                  src={imageURL}
-                />
-              )}
+              <FormControl isInvalid={imageError}>
+                <Input onChange={handleImageChange} type="file" padding={1.5} />
+                {error && <ErrorText>{error}</ErrorText>}
+                {image && (
+                  <Image
+                    mt={2}
+                    boxSize={100}
+                    objectFit={"cover"}
+                    alt="preview image"
+                    src={imageURL}
+                  />
+                )}
+              </FormControl>
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={handleUpload}>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                onClick={handleUpload}
+                isLoading={uploading}
+              >
                 Upload
               </Button>
-              <Button type="submit" onClick={onClose}>
+
+              <Button type="submit" onClick={handleClose}>
                 Cancel
               </Button>
             </ModalFooter>
+            {imageError && <ErrorText>{imageError}</ErrorText>}
+            {uploadError && <ErrorText>{uploadError}</ErrorText>}
           </ModalContent>
         </Modal>
 
