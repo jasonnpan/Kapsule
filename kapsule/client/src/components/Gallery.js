@@ -105,13 +105,36 @@ const Gallery = ({ title, initialSort }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images]);
 
+  const getDate = (date) => {
+    var months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    var year = date.getFullYear();
+    var month = months[date.getMonth()];
+    var dateVal = date.getDate();
+
+    var formattedDate = dateVal + "/" + (date.getMonth() + 1) + "/" + year;
+    return formattedDate;
+  };
+
   return (
     <Flex mt={6} flexDirection={"column"} mx={2}>
       <Text textAlign={"left"} fontSize={"4xl"} mb={2}>
         {title}
       </Text>
 
-      <Stack direction={"row"}  spacing={4}>
+      <Stack direction={"row"} spacing={4}>
         <Input
           placeholder="Search image..."
           onChange={(e) => handleSelect(e, setSearch)}
@@ -176,22 +199,34 @@ const Gallery = ({ title, initialSort }) => {
               <AspectRatio w={"auto"} ratio={1}>
                 <Image src={getUrl(img.id)} alt="" objectFit="cover" />
               </AspectRatio>
-              <Button
-                leftIcon={<Favorite />}
-                onClick={() => handleLikes(filtered, index)}
+              <Stack
+                alignItems={"center"}
+                flexDirection={"row"}
+                pos={"relative"}
               >
-                <Text>{img.likes}</Text>
-              </Button>
-              {likesError && <ErrorText>Likes malfunction</ErrorText>}
-              <Text fontSize={"md"} noOfLines={2}>
-                {img.date.toString()}
-              </Text>
+                <Button
+                  leftIcon={<Favorite />}
+                  onClick={() => handleLikes(filtered, index)}
+                >
+                  <Text>{img.likes}</Text>
+                </Button>
+                {likesError && <ErrorText>Likes malfunction</ErrorText>}
+                <Text
+                  fontSize={"md"}
+                  noOfLines={2}
+                  right={"0"}
+                  pos={"absolute"}
+                >
+                  {getDate(img.date)}
+                </Text>
+              </Stack>
+
               <Text fontSize={"md"} noOfLines={2}>
                 {img.description}
               </Text>
             </Box>
           ))}
-          {filtered?.length === 0 && (<Text>No public images</Text>)}
+        {filtered?.length === 0 && <Text>No public images</Text>}
       </SimpleGrid>
     </Flex>
   );
