@@ -17,23 +17,23 @@ import {
   PopoverBody,
   PopoverFooter,
   ButtonGroup,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import ImageOptions from "./ImageOptions";
-import { Favorite } from "@mui/icons-material";
-import { useMutation } from "../hooks/useMutation";
-import axiosClient from "../config/axios";
-import { useState, useRef } from "react";
+import ImageOptions from './ImageOptions';
+import { Favorite } from '@mui/icons-material';
+import { useMutation } from '../hooks/useMutation';
+import axiosClient from '../config/axios';
+import { useState, useRef } from 'react';
 
 const ErrorText = ({ children, ...props }) => (
-  <Text fontSize="lg" color="red.300" {...props}>
+  <Text fontSize='lg' color='red.300' {...props}>
     {children}
   </Text>
 );
 
-const cloud_name = "dn2csumoj";
-const api_key = "745634272993468";
-const user = JSON.parse(localStorage.getItem("user"));
+const cloud_name = 'dn2csumoj';
+const api_key = '745634272993468';
+const user = JSON.parse(localStorage.getItem('user'));
 
 const Posts = ({ setUpdate, retrieveState }) => {
   const {
@@ -46,13 +46,13 @@ const Posts = ({ setUpdate, retrieveState }) => {
     fn: remove,
     isLoading: removing,
     error: removeError,
-  } = useMutation("delete");
+  } = useMutation('delete');
 
   const {
     fn: likes,
     isLoading: liking,
     error: likesError,
-  } = useMutation("likes");
+  } = useMutation('likes');
 
   const sortedImages = images
     ?.map((obj) => {
@@ -67,14 +67,14 @@ const Posts = ({ setUpdate, retrieveState }) => {
   };
 
   const handleDelete = async (imgId) => {
-    const signatureResponse = await axiosClient.post("/find-signature", {
+    const signatureResponse = await axiosClient.post('/find-signature', {
       imgId,
     });
     const formData = new FormData();
-    formData.append("public_id", imgId);
-    formData.append("signature", signatureResponse.data.signature);
-    formData.append("api_key", api_key);
-    formData.append("timestamp", signatureResponse.data.timestamp);
+    formData.append('public_id', imgId);
+    formData.append('signature', signatureResponse.data.signature);
+    formData.append('api_key', api_key);
+    formData.append('timestamp', signatureResponse.data.timestamp);
 
     const res = await axiosClient.post(
       `https://api.cloudinary.com/v1_1/${cloud_name}/image/destroy`,
@@ -92,8 +92,9 @@ const Posts = ({ setUpdate, retrieveState }) => {
   };
 
   const [openOptions, setOpenOptions] = useState(false);
-  const [imageInfo, setImageInfo] = useState("");
+  const [imageInfo, setImageInfo] = useState('');
   const handleImage = (img) => {
+    console.log(img);
     setImageInfo(img);
     setOpenOptions(true);
   };
@@ -105,61 +106,61 @@ const Posts = ({ setUpdate, retrieveState }) => {
   const initRef = useRef();
 
   return (
-    <Flex mt={6} flexDirection={"column"}>
-      <Text textAlign={"left"} fontSize={"4xl"} mb={2}>
+    <Flex mt={6} flexDirection={'column'}>
+      <Text textAlign={'left'} fontSize={'4xl'} mb={2}>
         Posts
       </Text>
       {retrieving && (
         <CircularProgress
-          color="gray.600"
-          trackColor="blue.300"
+          color='gray.600'
+          trackColor='blue.300'
           size={7}
           thickness={10}
           isIndeterminate
         />
       )}
       {retrieveErr && (
-        <ErrorText textAlign="left">Failed to load images</ErrorText>
+        <ErrorText textAlign='left'>Failed to load images</ErrorText>
       )}
 
       {!retrieveErr && images?.length === 0 && (
-        <Text textAlign="left" fontSize="lg" color="gray.500">
+        <Text textAlign='left' fontSize='lg' color='gray.500'>
           No images found
         </Text>
       )}
-      <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={"none"}>
+      <SimpleGrid columns={[4, 5, 6]} spacing={4} listStyleType={'none'}>
         {sortedImages?.length > 0 &&
           sortedImages.map((img, index) => (
-            <Box key={img.id} pos={"relative"}>
+            <Box key={img.id} pos={'relative'}>
               <Popover closeOnBlur={false} initialFocusRef={initRef}>
                 {({ isOpen, onClose }) => (
                   <>
                     <PopoverTrigger>
                       <CloseButton
-                        pos={"absolute"}
+                        pos={'absolute'}
                         top={0}
                         right={0}
                         zIndex={1}
-                        _active={{ color: "red" }}
+                        _active={{ color: 'red' }}
                       />
                     </PopoverTrigger>
                     <PopoverContent>
                       <PopoverArrow />
                       <PopoverCloseButton />
-                      <PopoverHeader fontSize={["sm", "md", "lg"]}>
+                      <PopoverHeader fontSize={['sm', 'md', 'lg']}>
                         Confirmation
                       </PopoverHeader>
-                      <PopoverBody fontSize={["sm", "md"]}>
+                      <PopoverBody fontSize={['sm', 'md']}>
                         Are you sure you want to continue? This image will be
                         removed permanently.
                       </PopoverBody>
-                      <PopoverFooter display="flex" justifyContent="flex-end">
-                        <ButtonGroup size="sm">
-                          <Button variant="outline" onClick={onClose}>
+                      <PopoverFooter display='flex' justifyContent='flex-end'>
+                        <ButtonGroup size='sm'>
+                          <Button variant='outline' onClick={onClose}>
                             Cancel
                           </Button>
                           <Button
-                            colorScheme="red"
+                            colorScheme='red'
                             onClick={() => handleDelete(img.id)}
                             isLoading={removing}
                           >
@@ -172,16 +173,16 @@ const Posts = ({ setUpdate, retrieveState }) => {
                   </>
                 )}
               </Popover>
-              <AspectRatio w={"auto"} ratio={1}>
+              <AspectRatio w={'auto'} ratio={1}>
                 <Image
                   src={getUrl(img.id)}
-                  alt=""
-                  objectFit="cover"
+                  alt=''
+                  objectFit='cover'
                   _hover={{
                     p: 1,
                     opacity: 0.8,
-                    transition: "1s ease",
-                    cursor: "pointer",
+                    transition: '1s ease',
+                    cursor: 'pointer',
                   }}
                   onClick={() => handleImage(img)}
                 />
@@ -194,7 +195,7 @@ const Posts = ({ setUpdate, retrieveState }) => {
                 <Text>{img.likes}</Text>
               </Button>
               {likesError && <ErrorText>Likes malfunction</ErrorText>}
-              <Text fontSize={"md"} noOfLines={2}>
+              <Text fontSize={'md'} noOfLines={2}>
                 {img.description}
               </Text>
             </Box>

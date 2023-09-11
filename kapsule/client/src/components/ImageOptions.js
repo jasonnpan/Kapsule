@@ -12,27 +12,24 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Image,
   Tag,
   TagLabel,
   TagCloseButton,
   Checkbox,
   InputRightElement,
   InputGroup,
-  Text,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import { useEffect, useState } from "react";
-import { useMutation } from "../hooks/useMutation";
+import { useEffect, useState } from 'react';
+import { useMutation } from '../hooks/useMutation';
 
 const ImageOptions = ({ open, setOpen, img }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [description, setDescription] = useState(img.description);
-  const [pub, setPub] = useState(img.pub);
+  const [pub, setPub] = useState(img.public);
   const [tags, setTags] = useState(img.tags);
-  const [newTag, setNewTag] = useState("");
-  
+  const [newTag, setNewTag] = useState('');
 
   useEffect(() => {
     if (open) onOpen();
@@ -42,7 +39,7 @@ const ImageOptions = ({ open, setOpen, img }) => {
     fn: update,
     isLoading: updating,
     error: updateErr,
-  } = useMutation("update");
+  } = useMutation('update');
 
   const handleUpdate = async () => {
     const updateInfo = {
@@ -68,12 +65,12 @@ const ImageOptions = ({ open, setOpen, img }) => {
     if (!(tags.indexOf(newTag) > -1)) {
       setTags([...tags, newTag]);
     }
-    
-    setNewTag("");
+
+    setNewTag('');
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
       handleAddTag();
     }
   };
@@ -96,13 +93,13 @@ const ImageOptions = ({ open, setOpen, img }) => {
               <Input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Description"
+                placeholder='Description'
               />
             </FormControl>
 
             <FormControl mt={4}>
               <FormLabel>Public</FormLabel>
-              <Checkbox defaultChecked={pub} onChange={() => setPub(!pub)} />
+              <Checkbox isChecked={pub} onChange={() => setPub(!pub)} />
             </FormControl>
 
             <FormControl mt={4}>
@@ -110,15 +107,15 @@ const ImageOptions = ({ open, setOpen, img }) => {
               <InputGroup>
                 <Input
                   value={newTag}
-                  placeholder="Add your favourite tags !!!"
+                  placeholder='Add your favourite tags !!!'
                   onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                 ></Input>
                 <InputRightElement>
                   <Button
                     onClick={handleAddTag}
-                    colorScheme="blue"
-                    variant={"outline"}
+                    colorScheme='blue'
+                    variant={'outline'}
                   >
                     Add
                   </Button>
@@ -127,11 +124,11 @@ const ImageOptions = ({ open, setOpen, img }) => {
 
               {tags.map((item) => (
                 <Tag
-                  size={"md"}
+                  size={'md'}
                   key={item}
-                  borderRadius="full"
-                  variant="solid"
-                  colorScheme="green"
+                  borderRadius='full'
+                  variant='solid'
+                  colorScheme='green'
                   m={1}
                 >
                   <TagLabel>{item}</TagLabel>
@@ -142,10 +139,10 @@ const ImageOptions = ({ open, setOpen, img }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleUpdate}>
+            <Button colorScheme='blue' mr={3} onClick={handleUpdate}>
               Update
             </Button>
-            <Button type="submit" onClick={handleClose}>
+            <Button type='submit' onClick={handleClose}>
               Cancel
             </Button>
           </ModalFooter>
