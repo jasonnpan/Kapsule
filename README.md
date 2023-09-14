@@ -1,4 +1,4 @@
-# Kapsule Cloudinary
+# Kapsule
 
 <h3> 🎨 Platform for Creatives to Share Art | 🛠️ In Development </h3>
 
