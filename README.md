@@ -1,6 +1,6 @@
 # Kapsule Cloudinary
 
-<h3> 🎨 Platform for Creatives to Share Art + Photography | 🛠️ In Development </h3>
+<h3> 🎨 Platform for Sharing Art + Photography | 🛠️ In Development </h3>
 
 Kapsule is a Pinterest-like platform on which users can upload their images to share with the world.
 * Users will assign keywords to photos as they upload them.
