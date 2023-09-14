@@ -7,7 +7,7 @@ Kapsule is a Pinterest-like platform on which users can upload their images to s
 * Other users will associate themselves with certain keywords.
 * Each day, the application will show them a new small "capsule" of art pieces + photos that describe their keywords.
 
-Pinterest, Tumblr, Instagram, and many other mainstream photo and media streaming platforms flood their users' feeds with "viral" posts based on trends + algorithms, causing a large number of talented, unconventional artists to go nameless for years. Kapsule aims to solve this problem by randomly suggesting feeds to users, to celecrate the art of all creatives.
+Pinterest, Tumblr, Instagram, and many other mainstream media sharing platforms flood their users' feeds with "viral" posts based on trends + algorithms, causing a large number of talented, unconventional artists to go nameless for years. Kapsule aims to solve this problem by randomly suggesting feeds to users, to celecrate the art of all creatives.
 <br/>
 
 <h3> 🧰 Tech Toolbox </h3>
