@@ -9,9 +9,9 @@ Kapsule is a Pinterest-like platform on which users can upload their images to s
 
 Pinterest, Tumblr, Instagram, and many other mainstream photo and media streaming platforms flood their users' feeds with "viral" posts based on trends + algorithms, causing a large number of talented, unconventional artists to go nameless for years. Kapsule aims to solve this problem by randomly suggesting feeds to users, to celecrate the art of all creatives.
 
-<br />
+<br/>
 
- 🧰 Tech Toolbox
+<h2> 🧰 Tech Toolbox <h2/>
 <table>
     <tr>
         <td> Languages </td>
