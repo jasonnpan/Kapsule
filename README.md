@@ -1,4 +1,4 @@
-Kapsule
+# Kapsule Cloudinary
 
 🎨 Platform for Creatives to Share Art + Photography | 🛠️ In Development
 
