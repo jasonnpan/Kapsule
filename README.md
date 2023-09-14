@@ -1,4 +1,6 @@
-# Kapsule | 🎨 Platform for Creatives to Share Art + Photography | 🛠️ In Development
+# 💊 Kapsule
+
+🎨 Platform for Creatives to Share Art + Photography | 🛠️ In Development
 
 Kapsule is a Pinterest-like platform on which users can upload their images to share with the world.
 • Users will assign keywords to photos as they upload them.
